@@ -22,6 +22,8 @@ using osum.Support.Desktop;
 
 namespace osum
 {
+    // comment test
+
 #if ANDROID
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", ScreenOrientation = ScreenOrientation.UserLandscape, MainLauncher = true)]
     public class Application : AppCompatActivity

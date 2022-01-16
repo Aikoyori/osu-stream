@@ -52,7 +52,7 @@ namespace osum.GameModes.Store
         {
             spriteManager.CheckSpritesAreOnScreenBeforeRendering = true;
 
-            pSprite background =
+                pSprite background =
                 new pSprite(TextureManager.Load(OsuTexture.songselect_background), FieldTypes.StandardSnapCentre, OriginTypes.Centre,
                     ClockTypes.Mode, Vector2.Zero, 0, true, new Color4(56, 56, 56, 255));
             background.AlphaBlend = false;
@@ -74,11 +74,11 @@ namespace osum.GameModes.Store
                 }
             }, true);
             topMostSpriteManager.Add(s_ButtonBack);
-
+            
             GameBase.ShowLoadingOverlay = true;
 
             fetchRequest?.Abort();
-            fetchRequest = new StringNetRequest("https://www.osustream.com/dl/list3.php");
+            fetchRequest = new StringNetRequest(GameBase.serverAddress + "/dl/list3.php");
             fetchRequest.onFinish += handlePackInfo;
             NetManager.AddRequest(fetchRequest);
 

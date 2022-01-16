@@ -61,7 +61,7 @@ namespace osum
         public static GameBase Instance;
 
         public static Random Random = new Random();
-
+        public static string serverAddress = osum.Constants.request_url;
         /// <summary>
         /// use for input handling, sprites etc.
         /// </summary>
@@ -130,9 +130,9 @@ namespace osum
             Instance = this;
 
             CrashHandler.Initialize();
-
             //initialise config before everything, because it may be used in Initialize() override.
             Config = new pConfigManager(Instance.PathConfig + "osum.cfg");
+            serverAddress = Config.GetValue(@"BMServerAddress", osum.Constants.request_url);
 
             Clock.USER_OFFSET = Config.GetValue("offset", 0);
         }

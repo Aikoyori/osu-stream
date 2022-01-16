@@ -68,7 +68,7 @@ namespace osum.GameModes.Options
 
             vPos += 70;
 
-            button = new pButton(LocalisationManager.GetString(OsuString.OnlineHelp), new Vector2(button_x_offset, vPos), new Vector2(280, 50), Color4.SkyBlue, delegate { GameBase.Instance.ShowWebView("https://www.osustream.com/help/", "Online Help"); });
+            button = new pButton(LocalisationManager.GetString(OsuString.OnlineHelp), new Vector2(button_x_offset, vPos), new Vector2(280, 50), Color4.SkyBlue, delegate { GameBase.Instance.ShowWebView(GameBase.serverAddress + "/help/", "Online Help"); });
 
             smd.Add(button);
 
@@ -83,11 +83,11 @@ namespace osum.GameModes.Options
             smd.Add(buttonFingerGuides);
 
             vPos += 70;
-
             buttonEasyMode = new pButton(LocalisationManager.GetString(OsuString.DefaultToEasyMode), new Vector2(button_x_offset, vPos), new Vector2(280, 50), Color4.SkyBlue, delegate { DisplayEasyModeDialog(); });
             smd.Add(buttonEasyMode);
 
             vPos += 60;
+
 
             text = new pText(LocalisationManager.GetString(OsuString.Audio), 36, new Vector2(header_x_offset, vPos), 1, true, Color4.White) { Bold = true, TextShadow = true };
             smd.Add(text);
@@ -149,9 +149,30 @@ namespace osum.GameModes.Options
 
             vPos += (int)text.MeasureText().Y + 50;
 
-            UpdateButtons();
 
-            vPos += 50;
+            vPos += 70;
+            
+            text = new pText(LocalisationManager.GetString(OsuString.AikoyoriStreamOptions), 36, new Vector2(header_x_offset, vPos), 1, true, Color4.White) { Bold = true, TextShadow = true };
+            smd.Add(text);
+
+            vPos += 90;
+
+            alternateServer = new pButton(LocalisationManager.GetString(OsuString.AlternateBeatmapServer), new Vector2(button_x_offset, vPos), new Vector2(250, 50), Color4.SkyBlue, 
+                delegate { DisplayBeatmapServerDialog(); });
+            smd.Add(alternateServer);
+
+
+
+            vPos += 90;
+            pButton delet = new pButton(LocalisationManager.GetString(OsuString.DeleteLocalBeatmaps), new Vector2(button_x_offset, vPos), new Vector2(250, 50), Color4.SkyBlue, 
+                delegate { 
+                    DisplayBeatmapDeletionDialog();
+                });
+            smd.Add(delet);
+
+            vPos += 90;
+
+            UpdateButtons();
 
             smd.ScrollTo(ScrollPosition);
         }
@@ -271,6 +292,7 @@ namespace osum.GameModes.Options
 
         private int lastEffectSound;
         private pButton buttonFingerGuides;
+        private pButton alternateServer;
         private pButton buttonEasyMode;
         private pSprite s_Header;
 
@@ -286,11 +308,35 @@ namespace osum.GameModes.Options
                 });
             GameBase.Notify(notification);
         }
+        internal static void DisplayBeatmapServerDialog()
+        {
+            Notification notification = new Notification(LocalisationManager.GetString(OsuString.AlternateBeatmapServer), LocalisationManager.GetString(OsuString.AlternateBeatmapServerExplanation),
+                NotificationStyle.YesNo,
+                delegate(bool yes)
+                {
+                    GameBase.Config.SetValue(@"AlternateServer", yes);
+                    string serverAdr;
+                    if (yes)
+                    {
+                        serverAdr = osum.Constants.request_url;
+                    }
+                    else
+                    {
+                        serverAdr = "https://www.osustream.com";
 
+                    }
+                    GameBase.Config.SetValue(@"BMServerAddress", serverAdr);
+                    GameBase.serverAddress = serverAdr;
+                    Console.WriteLine(GameBase.serverAddress);
+                    if (Director.CurrentMode is Options o) o.UpdateButtons();
+                });
+            GameBase.Notify(notification);
+        }
         private void UpdateButtons()
         {
             buttonEasyMode.SetStatus(GameBase.Config.GetValue(@"EasyMode", false));
             buttonFingerGuides.SetStatus(GameBase.Config.GetValue(@"GuideFingers", false));
+            alternateServer.SetStatus(GameBase.Config.GetValue(@"AlternateServer", true));
         }
 
         internal static void DisplayEasyModeDialog()
@@ -301,6 +347,33 @@ namespace osum.GameModes.Options
                 {
                     GameBase.Config.SetValue(@"EasyMode", yes);
 
+                    if (Director.CurrentMode is Options o) o.UpdateButtons();
+                });
+            GameBase.Notify(notification);
+        }
+         internal static void DisplayBeatmapDeletionDialog()
+        {
+            Notification notification = new Notification(LocalisationManager.GetString(OsuString.DeleteLocalBeatmaps), LocalisationManager.GetString(OsuString.DeleteLocalBeatmapsWarning),
+                NotificationStyle.YesNo,
+                delegate(bool yes)
+                {
+                    if(yes)
+                    {
+                        string data = SongSelectMode.BeatmapPath;
+                        Console.WriteLine(data);
+                        string[] folders = System.IO.Directory.GetFiles(data);
+                        for (int i = 0; i < folders.Length; i++)
+                        { 
+                            string filenameLOL = folders[i].Split("/")[folders[i].Split("/").Length- 1];
+                            Console.WriteLine(filenameLOL);
+                            if(!(filenameLOL == "nekodex - Liquid Future (mm201).osf2" || filenameLOL == "tieff & Natteke - Endless Tower (RandomJibberish).osf2"))
+                            {
+
+                                System.IO.File.Delete(folders[i]);
+                            }
+                        }
+
+                    }
                     if (Director.CurrentMode is Options o) o.UpdateButtons();
                 });
             GameBase.Notify(notification);

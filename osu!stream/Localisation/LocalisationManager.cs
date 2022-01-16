@@ -207,6 +207,11 @@ namespace osum.Localisation
         TwitterSuccess,
         TwitterSuccessDetails,
         UniversalOffset,
-        UniversalOffsetDetails
+        UniversalOffsetDetails,
+        AlternateBeatmapServer,
+        AlternateBeatmapServerExplanation,
+        DeleteLocalBeatmaps,
+        DeleteLocalBeatmapsWarning,
+        AikoyoriStreamOptions
     }
 }
