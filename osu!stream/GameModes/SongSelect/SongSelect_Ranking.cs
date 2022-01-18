@@ -45,7 +45,7 @@ namespace osum.GameModes.SongSelect
 
             int period = 0;
 
-            rankingNetRequest = new StringNetRequest(@"https://osustream.com/score/retrieve.php", "POST",
+            rankingNetRequest = new StringNetRequest(Constants.request_url + @"/score/retrieve.php", "POST",
                 "udid=" + GameBase.Instance.DeviceIdentifier +
                 "&filename=" + NetRequest.UrlEncode(Path.GetFileName(Player.Beatmap.ContainerFilename)) +
                 "&period=" + period +
@@ -103,7 +103,7 @@ namespace osum.GameModes.SongSelect
                 text.Origin = OriginTypes.Centre;
                 text.Field = FieldTypes.StandardSnapTopCentre;
 
-                rankingSpriteManager.Add(text);
+                //rankingSpriteManager.Add(text);
 
                 int index = 0;
                 foreach (Score score in rankingScores)

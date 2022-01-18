@@ -11,7 +11,12 @@ namespace osum
     public static class Constants
     {
         public const double SIXTY_FRAME_TIME = (double)1000 / 60;
+#if !DEBUG
+
+        public static string request_url = "https://beatstream.aikoyori.xyz";
+#else
         public static string request_url = "http://192.168.0.135:3000";
+#endif
         //public static string request_url;
 
 #if iOS

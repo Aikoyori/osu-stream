@@ -35,7 +35,7 @@ namespace osum.GameModes.MainMenu
             if (lastRead == string.Empty || lastRetrieved != lastRead)
                 HasNews = true;
 
-            StringNetRequest nr = new StringNetRequest(@"https://osustream.com/misc/news.php?v=2");
+            StringNetRequest nr = new StringNetRequest(Constants.request_url + @"/misc/news.php?v=2");
             nr.onFinish += newsCheck_onFinish;
             NetManager.AddRequest(nr);
         }
@@ -44,7 +44,7 @@ namespace osum.GameModes.MainMenu
         {
             HasNews = false;
 
-            GameBase.Instance.ShowWebView(@"https://news.osustream.com/", "News");
+            GameBase.Instance.ShowWebView(Constants.request_url+"/update", "News");
 
             GameBase.Config.SetValue("NewsLastRead", GameBase.Config.GetValue("NewsLastRetrieved", string.Empty));
             GameBase.Config.SaveConfig();

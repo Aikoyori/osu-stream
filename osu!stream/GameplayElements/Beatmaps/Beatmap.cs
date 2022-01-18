@@ -201,16 +201,16 @@ namespace osum.GameplayElements.Beatmaps
 
         public double HpStreamAdjustmentMultiplier = 1;
 
-        private int difficultyStars = -1;
+        private float difficultyStars = -1;
 
-        public int DifficultyStars
+        public float DifficultyStars
         {
             get
             {
                 try
                 {
                     if (difficultyStars == -1)
-                        int.TryParse(Package.GetMetadata(MapMetaType.Difficulty), out difficultyStars);
+                        float.TryParse(Package.GetMetadata(MapMetaType.Difficulty), out difficultyStars);
                 }
                 catch
                 {

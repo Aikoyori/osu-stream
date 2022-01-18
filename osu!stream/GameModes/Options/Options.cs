@@ -3,10 +3,12 @@ using OpenTK;
 using OpenTK.Graphics;
 using osum.Audio;
 using osum.GameModes.SongSelect;
+using osum.GameplayElements;
 using osum.Graphics;
 using osum.Graphics.Renderers;
 using osum.Graphics.Sprites;
 using osum.Helpers;
+using osum.Libraries.NetLib;
 using osum.Localisation;
 using osum.UI;
 
@@ -149,6 +151,75 @@ namespace osum.GameModes.Options
 
             vPos += (int)text.MeasureText().Y + 50;
 
+            text = new pText(LocalisationManager.GetString(OsuString.OnlineOptions), 36, new Vector2(header_x_offset, vPos), 1, true, Color4.White) { Bold = true, TextShadow = true };
+            smd.Add(text);
+
+            vPos += 80;
+
+            if (!GameBase.HasAuth)
+            {
+                button = new pButton(LocalisationManager.GetString(OsuString.DiscordLink), new Vector2(button_x_offset, vPos), new Vector2(280, 50), Color4.SkyBlue, HandleDiscordAuth);
+                smd.Add(button);
+
+                vPos += 40;
+
+                text = new pText(LocalisationManager.GetString(OsuString.Discord), 24, new Vector2(0, vPos), 1, true, Color4.LightGray) { TextShadow = true };
+
+                text.Field = FieldTypes.StandardSnapTopCentre;
+                text.Origin = OriginTypes.TopCentre;
+                text.TextAlignment = TextAlignment.Centre;
+                text.MeasureText(); //force a measure as this is the last sprite to be added to the draggable area (need height to be precalculated)
+                text.TextBounds.X = 600;
+
+                smd.Add(text);
+
+                /*vPos += (int)text.MeasureText().Y + 50;
+                button = new pButton(LocalisationManager.GetString(OsuString.GuestUsername), new Vector2(button_x_offset, vPos), new Vector2(280, 50), Color4.SkyBlue, delegate
+                {
+#if iOS
+                    TextInputNotification tin = new TextInputNotification(LocalisationManager.GetString(OsuString.ChooseUsername), GameBase.Config.GetValue<string>("username", "Guest"), delegate(bool yes)
+                        {
+                            if (yes)
+                            {
+                                GameBase.Config.SetValue<string>("username", tin.Text);
+                                GameBase.Config.SaveConfig();
+                            }
+                        });
+#endif
+                });
+                smd.Add(button);*/
+            }
+            else
+            {
+                button = new pButton(string.Format(LocalisationManager.GetString(OsuString.TwitterUnlink), GameBase.Config.GetValue<string>("username", null)), new Vector2(button_x_offset, vPos), new Vector2(280, 50), Color4.SkyBlue, delegate
+                {
+                    StringNetRequest nr = new StringNetRequest(Constants.request_url+"discord/disconnect.php?udid="
+                        + GameBase.Instance.DeviceIdentifier + "&cc=" + GameBase.Config.GetValue<string>("hash", null));
+                    nr.onFinish += delegate (string _result, Exception e)
+                    {
+                        GameBase.GloballyDisableInput = false;
+
+                        if (e != null || _result != "success")
+                            GameBase.Notify(LocalisationManager.GetString(OsuString.TwitterLinkError));
+                        else
+                        {
+                            GameBase.Config.SetValue<string>("username", null);
+                            GameBase.Config.SetValue<string>("hash", null);
+                            GameBase.Config.SetValue<string>("twitterId", null);
+                            GameBase.Config.SaveConfig();
+
+                            Director.ChangeMode(Director.CurrentOsuMode);
+                        }
+                    };
+
+                    GameBase.GloballyDisableInput = true;
+
+                    NetManager.AddRequest(nr);
+                });
+
+                smd.Add(button);
+            }
+
 
             vPos += 70;
             
@@ -195,7 +266,7 @@ namespace osum.GameModes.Options
 
         private void HandleTwitterOAuth()
         {
-            GameBase.Instance.ShowWebView("https://osustream.com/twitter/connect.php?udid=" + GameBase.Instance.DeviceIdentifier,
+            GameBase.Instance.ShowWebView("https://beatstream.aikoyori.xyz/discord/authorize" + GameBase.Instance.DeviceIdentifier,
                 LocalisationManager.GetString(OsuString.TwitterLink),
                 delegate(string url)
                 {
@@ -289,6 +360,28 @@ namespace osum.GameModes.Options
             //not available on PC builds.
         }
 #endif
+        
+        private void HandleDiscordAuth(object sender, EventArgs args)
+        {
+            GameBase.Instance.ShowWebView("https://beatstream.aikoyori.xyz/discord/authorize?deviceid=" + GameBase.Instance.DeviceIdentifier,
+                   LocalisationManager.GetString(OsuString.DiscordLink),
+                   delegate (string url)
+                   {
+                       if (url.StartsWith("finished://"))
+                       {
+                           string[] split = url.Replace("finished://", "").Split('/');
+
+                           GameBase.Config.SetValue<string>("username", split[0]);
+                           GameBase.Config.SetValue<string>("hash", split[1]);
+                           GameBase.Config.SetValue<string>("twitterId", split[2]);
+                           GameBase.Config.SaveConfig();
+
+                           Director.ChangeMode(Director.CurrentOsuMode);
+                           return true;
+                       }
+                       return false;
+                   });
+        }
 
         private int lastEffectSound;
         private pButton buttonFingerGuides;
@@ -370,6 +463,7 @@ namespace osum.GameModes.Options
                             {
 
                                 System.IO.File.Delete(folders[i]);
+                                BeatmapDatabase.Erase(new GameplayElements.Beatmaps.Beatmap(folders[i]));
                             }
                         }
 

@@ -212,6 +212,9 @@ namespace osum.Localisation
         AlternateBeatmapServerExplanation,
         DeleteLocalBeatmaps,
         DeleteLocalBeatmapsWarning,
-        AikoyoriStreamOptions
+        AikoyoriStreamOptions,
+        Discord,
+        DiscordLink,
+        DiscordUnlink
     }
 }

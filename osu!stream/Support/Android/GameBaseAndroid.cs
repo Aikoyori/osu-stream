@@ -30,6 +30,8 @@ namespace osum.Support.Android
             // Before we run anything, let's check if this is the first run...
             // If this is the first run, let's import the packaged beatmaps from our assets!
             // This is unfortunately required because Android sucks, thanks Google.
+
+
             if (Config.GetValue("firstrun", true))
             {
                 string[] beatmapPaths = activity.Assets?.List("Beatmaps/");
@@ -87,11 +89,13 @@ namespace osum.Support.Android
         {
             // Because this is always landscape, we'll use the safe width and real height of the display.
             NativeSize = new System.Drawing.Size((int)DeviceDisplay.MainDisplayInfo.Width, (int)DeviceDisplay.MainDisplayInfo.Height);
+            
 
             this.DisableDimming = true;
 
             base.SetupScreen();
         }
+
 
         public override string PathConfig => $"{Environment.GetFolderPath(Environment.SpecialFolder.Personal)}/";
     }

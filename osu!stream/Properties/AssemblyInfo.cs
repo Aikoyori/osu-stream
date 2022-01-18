@@ -6,12 +6,12 @@ using Android.App;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("osu!stream")]
+[assembly: AssemblyTitle("Aikoyorisu!stream")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("osu!stream")]
-[assembly: AssemblyCopyright("Copyright © peppy 2021")]
+[assembly: AssemblyProduct("Aikoyorisu!stream")]
+[assembly: AssemblyCopyright("Copyright © Aikoyori 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

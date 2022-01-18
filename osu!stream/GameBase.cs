@@ -52,7 +52,7 @@ using osum.Input;
 using osum.Localisation;
 using osum.Support;
 using osum.UI;
-
+using Xamarin.Essentials;
 
 namespace osum
 {
@@ -132,8 +132,15 @@ namespace osum
             CrashHandler.Initialize();
             //initialise config before everything, because it may be used in Initialize() override.
             Config = new pConfigManager(Instance.PathConfig + "osum.cfg");
-            serverAddress = Config.GetValue(@"BMServerAddress", osum.Constants.request_url);
+            string sus = Config.GetValue(@"BMServerAddress", osum.Constants.request_url);
+            if (sus != osum.Constants.request_url && Config.GetValue(@"AlternateServer", true))
+            {
+                Config.SetValue(@"BMServerAddress", osum.Constants.request_url);
+                
 
+            }
+
+            serverAddress = Config.GetValue(@"BMServerAddress", osum.Constants.request_url);
             Clock.USER_OFFSET = Config.GetValue("offset", 0);
         }
 
@@ -606,9 +613,34 @@ namespace osum
 
         public virtual void OpenUrl(string url)
         {
+#if !ANDROID
             Process.Start(url);
+#else
+            OpenBrowser(new Uri(url));
+#endif
         }
-
+        public async void OpenBrowser(Uri uri)
+        {
+            try
+            {
+                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                // An unexpected error occured. No browser may be installed on the device.
+            }
+        }        
+        public async void OpenOauth2View(Uri uri)
+        {
+            try
+            {
+                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                // An unexpected error occured. No browser may be installed on the device.
+            }
+        }
         public virtual string PathConfig => string.Empty;
     }
 }
