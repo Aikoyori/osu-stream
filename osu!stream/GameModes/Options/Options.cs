@@ -361,12 +361,11 @@ namespace osum.GameModes.Options
             //not available on PC builds.
         }
 #endif
-        string ParseAuthenticatorResult(WebAuthenticatorResult result)
+        string ParseAuthenticatorResult(WebAuthenticatorResult resulter)
         {
-            string result = result?.Properties["result"];
-            string code = result?.Properties["code"];
-            string sessionState = result?.Properties["session_state"];
-            return $"{Constants.request_url}#code={code}";
+            string result = resulter?.Properties["result"];
+            string code = resulter?.Properties["code"];
+            return $"{Constants.request_url}?result={result}&code={code}";
         }
         private async void HandleDiscordAuth(object sender, EventArgs args)
         {
@@ -378,7 +377,7 @@ namespace osum.GameModes.Options
                     new Uri(Constants.CALLBACK_SCHEME+"://")
                     );
                 string raw = ParseAuthenticatorResult(authResult);
-                string authorizeResponse = new AuthorizeResponse(raw);
+                Console.WriteLine(raw);
                 
             }
             catch
@@ -482,7 +481,7 @@ namespace osum.GameModes.Options
                         string[] folders = System.IO.Directory.GetFiles(data);
                         for (int i = 0; i < folders.Length; i++)
                         { 
-                            string filenameLOL = folders[i].Split("/")[folders[i].Split("/").Length- 1];
+                            string filenameLOL = folders[i].Split('/')[folders[i].Split('/').Length- 1];
                             Console.WriteLine(filenameLOL);
                             if(!(filenameLOL == "nekodex - Liquid Future (mm201).osf2" || filenameLOL == "tieff & Natteke - Endless Tower (RandomJibberish).osf2"))
                             {
