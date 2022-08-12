@@ -15,9 +15,10 @@ namespace osum
 
         public static string request_url = "https://beatstream.aikoyori.xyz";
 #else
-        public static string request_url = "http://192.168.0.135:3000";
+        public const string request_url = "http://192.168.0.135:4500";
 #endif
         //public static string request_url;
+        public const string CALLBACK_SCHEME = "aikodiscordauthorize";
 
 #if iOS
         public const int COLOR_BUFFER_BIT = (int)All.ColorBufferBit;

@@ -79,6 +79,7 @@
     <Compile Include="Audio\SoundEffectPlayerBassAndroid.cs" />
     <Compile Include="Audio\SoundEffectPlayerOpenAL.cs" />
     <Compile Include="Graphics\Renderers\NativeTextRendererAndroid.cs" />
+    <Compile Include="WebAuthenticationCallbackActivity.cs" />
     <Compile Include="Input\Sources\InputSourceAndroid.cs" />
     <Compile Include="Input\TrackingPointAndroid.cs" />
     <Compile Include="Main.cs" />
@@ -349,6 +350,9 @@
     <PackageReference Include="Xamarin.Google.Android.Material">
       <Version>1.4.0.4</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\Android\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

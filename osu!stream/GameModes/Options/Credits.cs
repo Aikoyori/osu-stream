@@ -19,6 +19,7 @@ namespace osum.GameModes.Options
         private readonly string[] creditsRoll =
         {
             "OsuTexture.menu_logo",
+            "*osu!stream credits",
             "Created by Dean \"peppy\" Herbert",
             "*Graphics",
             "Koko Ban - Concept artwork, Interface mockups, colours!",
@@ -65,7 +66,9 @@ namespace osum.GameModes.Options
             "*Thanks to",
             "Nuudles - Developing the cydia osu! release which is still standing strong",
             "Testers - Special thanks to Cyclone, Doddler, dvorak, Guy-kun, James, mattyu007, nekodex, PJMS, Saphier, tobebuta and my mum (i'm serious)",
-            "#bat - For support and help on various occasions"
+            "#bat - For support and help on various occasions",
+            "*Aikoyorisu!stream Developers",
+            "Aikoyori - Development"
         };
 
         private readonly int beatLength = 800;

@@ -11,6 +11,7 @@ using osum.Helpers;
 using osum.Libraries.NetLib;
 using osum.Localisation;
 using osum.UI;
+using Xamarin.Essentials;
 
 #if iOS
 using Accounts;
@@ -168,7 +169,6 @@ namespace osum.GameModes.Options
                 text.Field = FieldTypes.StandardSnapTopCentre;
                 text.Origin = OriginTypes.TopCentre;
                 text.TextAlignment = TextAlignment.Centre;
-                text.MeasureText(); //force a measure as this is the last sprite to be added to the draggable area (need height to be precalculated)
                 text.TextBounds.X = 600;
 
                 smd.Add(text);
@@ -226,6 +226,7 @@ namespace osum.GameModes.Options
             text = new pText(LocalisationManager.GetString(OsuString.AikoyoriStreamOptions), 36, new Vector2(header_x_offset, vPos), 1, true, Color4.White) { Bold = true, TextShadow = true };
             smd.Add(text);
 
+            text.MeasureText(); //force a measure as this is the last sprite to be added to the draggable area (need height to be precalculated)
             vPos += 90;
 
             alternateServer = new pButton(LocalisationManager.GetString(OsuString.AlternateBeatmapServer), new Vector2(button_x_offset, vPos), new Vector2(250, 50), Color4.SkyBlue, 
@@ -360,14 +361,37 @@ namespace osum.GameModes.Options
             //not available on PC builds.
         }
 #endif
-        
-        private void HandleDiscordAuth(object sender, EventArgs args)
+        string ParseAuthenticatorResult(WebAuthenticatorResult result)
         {
-            GameBase.Instance.ShowWebView("https://beatstream.aikoyori.xyz/discord/authorize?deviceid=" + GameBase.Instance.DeviceIdentifier,
+            string result = result?.Properties["result"];
+            string code = result?.Properties["code"];
+            string sessionState = result?.Properties["session_state"];
+            return $"{Constants.request_url}#code={code}";
+        }
+        private async void HandleDiscordAuth(object sender, EventArgs args)
+        {
+            try
+            {
+
+                var authResult = await WebAuthenticator.AuthenticateAsync(
+                    new Uri(Constants.request_url + "/discord/authorize/app?deviceid=" + GameBase.Instance.DeviceIdentifier),
+                    new Uri(Constants.CALLBACK_SCHEME+"://")
+                    );
+                string raw = ParseAuthenticatorResult(authResult);
+                string authorizeResponse = new AuthorizeResponse(raw);
+                
+            }
+            catch
+            {
+
+            }
+
+            /*
+            GameBase.Instance.ShowWebView(Constants.request_url + "/discord/authorize?deviceid=" + GameBase.Instance.DeviceIdentifier,
                    LocalisationManager.GetString(OsuString.DiscordLink),
                    delegate (string url)
                    {
-                       if (url.StartsWith("finished://"))
+                       if (url.Contains("discord/authorized"))
                        {
                            string[] split = url.Replace("finished://", "").Split('/');
 
@@ -381,6 +405,7 @@ namespace osum.GameModes.Options
                        }
                        return false;
                    });
+            */
         }
 
         private int lastEffectSound;

@@ -62,6 +62,9 @@
   <PropertyGroup>
     <ApplicationIcon>osu!s.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>osum.Application</StartupObject>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="AssetManager\NativeAssetManager.cs" />
